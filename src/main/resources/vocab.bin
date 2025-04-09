@@ -1,0 +1,16 @@
+<UNK>=0
+<PAD>=1
+<SOS>=2
+<EOS>=3
+hello=4
+hi=5
+how=6
+are=7
+you=8
+i=9
+am=10
+bot=11
+what=12
+is=13
+your=14
+name=15
