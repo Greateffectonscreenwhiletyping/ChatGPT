@@ -5,18 +5,26 @@ import java.util.Scanner;
 public class Chat {
     private ChatbotModel chatbotModel;
     private DataHandler dataHandler;
-    public Chat() throws SQLException, IOException {
+    private NLPProcessor nlpProcessor;
+    public Chat() throws SQLException, IOException, ClassNotFoundException {
         this.dataHandler = new DataHandler();
         this.chatbotModel = new ChatbotModel(dataHandler);
-        File modelFile = new File("chatbot_model.zip");
-        if (modelFile.exists()) {
+        this.nlpProcessor = new NLPProcessor();
+        initializeModel();
+    }
+    private void initializeModel() throws IOException, SQLException, ClassNotFoundException {
+        File modelFile=new File("src/main/resources/chatbot_model.zip");
+        File vocabFile=new File("src/main/resources/vocabulary.bin");
+        if (modelFile.exists() && vocabFile.exists()) {
             chatbotModel.loadModel(modelFile.getPath());
-            System.out.println("Loaded pre-trained model.");
+            chatbotModel.getVocabularyProcessor().loadVocabulary(vocabFile.getPath());
+            System.out.println("Loaded pre-trained model and vocabulary.");
         } else {
             System.out.println("Initializing new model...");
             chatbotModel.initialize();
             chatbotModel.trainFromDatabase();
             chatbotModel.saveModel(modelFile.getPath());
+            chatbotModel.getVocabularyProcessor().saveVocabulary(vocabFile.getPath());
             System.out.println("Model trained and saved.");
         }
     }
@@ -38,7 +46,7 @@ public class Chat {
         }
         scanner.close();
     }
-    public static void main(String[] args) throws SQLException, IOException {
+    public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException {
         Chat chat = new Chat();
         chat.startChat();
     }

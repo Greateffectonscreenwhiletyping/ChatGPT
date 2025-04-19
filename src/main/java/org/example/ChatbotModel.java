@@ -18,23 +18,25 @@ import java.io.*;
 import java.sql.SQLException;
 import java.util.*;
 public class ChatbotModel {
-    private VocabularyProcessor vp = new VocabularyProcessor();
+    private VocabularyProcessor vp;
     private MultiLayerNetwork model;
     private DataHandler dataHandler;
+    private NLPProcessor nlpProcessor;
     private Map<String, Integer> wordToIndex = new HashMap<>();
     private Map<Integer, String> indexToWord = new HashMap<>();
     private int wordIndex = 0;
     private int vocabularySize = 0;
     private int sequenceLength = 2147483647;
     private int vectorSize = 2147483647;
-    public double learningRate = 0.001;
     public int LSTMLayerSize = 256;
+    private double learningRate = 0.001;
     public String modelSavePath = "src/main/resources/chatbot_model.zip";
     public String vocabSavePath = "src/main/resources/vocabulary.bin";
     public ChatbotModel(DataHandler dataHandler) {
-        this.dataHandler = dataHandler;
+        this.dataHandler=dataHandler;
+        this.nlpProcessor=new NLPProcessor();
+        this.vp=new VocabularyProcessor(nlpProcessor);
     }
-    // Initialize vocabulary size by processing chat data
     public void initializeVocabulary(List<String[]> chatData) {
         for (String[] record : chatData) {
             String[] words = record[0].split("\\s+");
@@ -148,5 +150,11 @@ public class ChatbotModel {
     }
     public MultiLayerNetwork getModel() {
         return model;
+    }
+    public VocabularyProcessor getVocabularyProcessor() {
+        if (vp==null) {
+            vp=new VocabularyProcessor(nlpProcessor);
+        }
+        return vp;
     }
 }

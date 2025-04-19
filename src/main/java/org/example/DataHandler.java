@@ -9,7 +9,7 @@ public class DataHandler {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
     public void createChatData(String input, String output) {
-        String query = "INSERT INTO chatbot_data (user_input, bot_response) VALUES (?, ?)"; // Modified table and column names
+        String query = "INSERT INTO chatbot_data (user_question, bot_response) VALUES (?, ?)"; // Modified table and column names
         Connection connection = null;
         PreparedStatement stmt = null;
         try {
